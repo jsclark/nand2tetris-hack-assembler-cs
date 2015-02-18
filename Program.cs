@@ -57,6 +57,7 @@ namespace Assembler {
 
         private static void findLabels( Parser parser, SymbolTable symbols ) {
             int ROM = 0;
+            string symbol;
 
             while( parser.hasMoreCommands() ) {
                 try {
@@ -67,10 +68,11 @@ namespace Assembler {
 
                 switch( parser.commandType() ) {
                     case Parser.L_COMMAND:
-                        if( symbols.contains( parser.symbol() ) ) {
-                            //throw redifined label exception
+                        symbol = parser.symbol();
+                        if( symbols.contains( symbol ) ) {
+                            throw new InvalidOperationException( "Cannot redefine label: " + symbol );
                         }
-                        symbols.addEntry( parser.symbol(), ROM );
+                        symbols.addEntry( symbol, ROM );
                         break;
                     case Parser.A_COMMAND:
                     case Parser.C_COMMAND:

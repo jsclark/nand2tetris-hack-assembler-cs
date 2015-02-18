@@ -72,7 +72,7 @@ namespace Assembler {
                 _command = C_COMMAND;
                 parseC();
             } else {
-                // throw invalid instruction
+                throw new FormatException( "Invalid instruction format: " + line );
             }
         }
 
@@ -103,31 +103,30 @@ namespace Assembler {
 
         public string symbol() {
             if( _command == C_COMMAND ) {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException( "Cannot use this method when the current instruction is C_COMMAND" );
             }
             return _symbol;
         }
 
         public string dest() {
             if( _command != C_COMMAND ) {
-                throw new InvalidOperationException(); 
+                throw new InvalidOperationException( "Cannot use this method unless the current instruction is C_COMMAND" ); 
             }
             return _dest;
         }
 
         public string comp() {
             if( _command != C_COMMAND ) {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException( "Cannot use this method unless the current instruction is C_COMMAND" );
             }
             return _comp;
         }
 
         public string jump() {
             if( _command != C_COMMAND ) {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException( "Cannot use this method unless the current instruction is C_COMMAND");
             }
             return _jump;
         }
-
     }
 }

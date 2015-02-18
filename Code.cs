@@ -62,18 +62,19 @@ namespace Assembler {
 
         public int comp( string comp ) {
             int value = 0;
+            string operation = comp;
 
-            if( comp != String.Empty ) {
-                if( comp.IndexOf( "M" ) != -1 ) {
-                    comp = comp.Replace( "M", "A" );
+            if( operation != String.Empty ) {
+                if( operation.IndexOf( "M" ) != -1 ) {
+                    operation = comp.Replace( "M", "A" );
                     value |= 64;
                 }
 
-                if( !comp_map.ContainsKey( comp ) ) {
-                    throw new ArgumentOutOfRangeException();
+                if( !comp_map.ContainsKey( operation ) ) {
+                    throw new NotImplementedException( "Unknown operation: " + comp );
                 }
 
-                value |= comp_map[ comp ];
+                value |= comp_map[ operation ];
             }
 
             return value << 6;
@@ -84,7 +85,7 @@ namespace Assembler {
 
             if( jump != String.Empty ) {
                 if( !jump_map.ContainsKey( jump ) ) {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException( "Unknown jump operation: " + jump );
                 }
 
                 value |= jump_map[ jump ];

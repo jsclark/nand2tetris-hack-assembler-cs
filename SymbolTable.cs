@@ -34,7 +34,7 @@ namespace Assembler {
 
         public int getAddress( string symbol ) {
             if( !contains( symbol ) ) {
-                // throw new UndefinedSymbol
+                throw new ArgumentOutOfRangeException( "Undefined symbol: " + symbol );
             }
             return symbols[ symbol ];
         }
