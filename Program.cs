@@ -4,31 +4,55 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Assembler {
     class Program {
         static void Main( string[] args ) {
-            string input_filepath = args[ 0 ];
-            string output_filepath;
+            StreamReader input;
+            StreamWriter output;
+            parseArguments( args, out input, out output );
 
-            if( args.Length > 1 ) {
-                output_filepath = args[ 1 ];
-            } else {
-                output_filepath = input_filepath.Replace( ".asm", ".hack" );
-            }
-
-            StreamReader file = new StreamReader( input_filepath );
-
-            Parser parser = new Parser( file );
+            Parser parser = new Parser( input );
             SymbolTable symbols = new SymbolTable();
 
             findLabels( parser, symbols );
 
-            StreamWriter output = new StreamWriter( output_filepath, false );
-
             assemble( parser, symbols, output );
 
             output.Close();
+        }
+
+        private static void parseArguments( string[] args, out StreamReader input, out StreamWriter output ) {
+            string in_file = String.Empty;
+            string out_file = String.Empty;
+            bool test_flag = false;
+            Match matches;
+
+            Regex argument_patterns = new Regex( @"^([-]t)|(.*[.]asm)|(^[-]o=(.*))$" );
+
+            for( int i = 0; i < args.Length; i++ ) {
+                if( argument_patterns.IsMatch( args[ i ] ) ) {
+                    matches = argument_patterns.Match( args[ i ] );
+                    if( matches.Groups[ 1 ].Value != String.Empty ) {
+                        test_flag = true;
+                    } else if( matches.Groups[ 2 ].Value != String.Empty ) {
+                        in_file = matches.Groups[ 2 ].Value;
+                    } else if( matches.Groups[ 3 ].Value != String.Empty ) {
+                        out_file = matches.Groups[ 4 ].Value;
+                    }
+                }
+            }
+
+            input = new StreamReader( in_file );
+            if( test_flag ) {
+                output = new StreamWriter( Console.OpenStandardOutput() );
+                output.AutoFlush = true;
+            } else if( out_file != String.Empty ) {
+                output = new StreamWriter( out_file, false );
+            } else {
+                output = new StreamWriter( in_file.Replace( ".asm", ".hack" ), false );
+            }
         }
 
         private static void findLabels( Parser parser, SymbolTable symbols ) {
