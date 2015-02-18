@@ -9,7 +9,14 @@ namespace Assembler {
     class Program {
         static void Main( string[] args ) {
             string input_filepath = args[ 0 ];
-            string output_filepath = input_filepath.Replace( ".asm", ".hack" );
+            string output_filepath;
+
+            if( args.Length > 1 ) {
+                output_filepath = args[ 1 ];
+            } else {
+                output_filepath = input_filepath.Replace( ".asm", ".hack" );
+            }
+
             StreamReader file = new StreamReader( input_filepath );
 
             Parser parser = new Parser( file );
